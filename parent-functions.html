@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parent Functions — Calc II Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-base: #0e0e10;
+    --bg-card: #1e1e22;
+    --bg-card-hover: #26262b;
+    --border: #2a2a30;
+    --border-hover: #3a3a42;
+    --text: #e4e4e7;
+    --text-mid: #a1a1aa;
+    --text-dim: #52525a;
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.1);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.1);
+    --blue: #60a5fa;
+    --gold: #fbbf24;
+    --card-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-base);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .page-wrap {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 32px 16px 60px;
+  }
+
+  /* HEADER */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .back-link {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--text-mid); }
+  .page-title {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .spacer { width: 60px; }
+
+  /* BUTTONS */
+  .btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  .btn-primary {
+    background: var(--blue);
+    color: #0e0e10;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-mid);
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    font-size: 0.82rem;
+  }
+  .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 0.78rem;
+  }
+
+  /* MENU */
+  .menu-modes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .mode-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    width: 100%;
+  }
+  .mode-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+  }
+  .mode-card .mode-title {
+    font-size: 0.95rem;
+    font-weight: 900;
+    margin-bottom: 2px;
+  }
+  .mode-card .mode-desc {
+    font-size: 0.74rem;
+    color: var(--text-mid);
+  }
+
+  /* REFERENCE GRID */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  @media (max-width: 420px) { .ref-grid { grid-template-columns: 1fr; } }
+  .ref-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+  }
+  .ref-item .ref-label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    margin-top: 6px;
+    color: var(--text);
+  }
+  .ref-item .ref-hint {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .ref-toggle {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 0;
+    margin-top: 16px;
+    font-family: 'Nunito', sans-serif;
+  }
+  .ref-toggle:hover { color: var(--text-mid); }
+
+  /* GRAPH AREA */
+  .graph-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 14px 0;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px;
+    text-align: center;
+    margin-bottom: 12px;
+    box-shadow: var(--card-shadow);
+  }
+  .question-card .q-text {
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  /* OPTIONS */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .opt-btn {
+    padding: 12px 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .opt-btn:hover:not(.opt-disabled) {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+  }
+  .opt-btn.opt-correct {
+    background: var(--green-dim);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .opt-btn.opt-wrong {
+    background: var(--red-dim);
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .opt-btn.opt-disabled { cursor: default; }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 5px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  /* TIMER BAR */
+  .timer-bar {
+    height: 7px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 8px 0;
+  }
+  .timer-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s linear, background 0.3s;
+  }
+
+  /* SCORE LINE */
+  .score-line {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  /* FLASHCARD */
+  .flashcard {
+    width: 100%;
+    min-height: 220px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 24px 16px;
+    transition: all 0.25s;
+    margin: 14px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .flashcard:hover { border-color: var(--border-hover); }
+  .flashcard.flipped { border-color: var(--blue); }
+  .flashcard .fc-label {
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+  .flashcard .fc-hint {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-top: 10px;
+  }
+
+  /* FLASHCARD ACTIONS */
+  .fc-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  .fc-btn {
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .fc-btn:hover { transform: translateY(-1px); }
+  .fc-miss {
+    background: var(--red-dim);
+    border: 1px solid rgba(248,113,113,0.3);
+    color: var(--red);
+  }
+  .fc-got {
+    background: var(--green-dim);
+    border: 1px solid rgba(74,222,128,0.3);
+    color: var(--green);
+  }
+
+  /* RESULTS */
+  .results-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    text-align: center;
+    margin: 24px 0;
+  }
+  .results-box .big-score {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--green);
+    line-height: 1;
+  }
+  .results-box .score-context {
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    margin-top: 4px;
+  }
+  .results-box .best-line {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+  .results-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  /* QUIT */
+  .quit-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    z-index: 10;
+  }
+  .quit-btn:hover { color: var(--text-mid); border-color: var(--border-hover); }
+
+  .play-area { position: relative; }
+
+  /* STATUS LINE */
+  .status-line {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    margin-bottom: 10px;
+  }
+
+  /* SPEED STATUS */
+  .speed-status {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+  }
+
+  /* HIDDEN */
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <a href="index.html" class="back-link">Back</a>
+    <div class="page-title">Parent Functions</div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ======================== SCREENS ======================== -->
+  <div id="menu-screen">
+    <div class="menu-modes">
+      <button class="mode-card" onclick="startMode('match')">
+        <div class="mode-title">Graph Match</div>
+        <div class="mode-desc">See a graph, pick the equation. All 8 parent functions.</div>
+      </button>
+      <button class="mode-card" onclick="startMode('flash')">
+        <div class="mode-title">Flashcards</div>
+        <div class="mode-desc">See the equation, visualize the graph, then reveal.</div>
+      </button>
+      <button class="mode-card" onclick="startMode('speed')">
+        <div class="mode-title">Speed Round</div>
+        <div class="mode-desc">45 seconds. How many can you identify?</div>
+      </button>
+    </div>
+
+    <button class="ref-toggle" id="refToggle" onclick="toggleRef()">Show quick reference</button>
+    <div id="refSection" class="hidden">
+      <div class="ref-grid" id="refGrid"></div>
+    </div>
+  </div>
+
+  <div id="play-screen" class="hidden"></div>
+  <div id="results-screen" class="hidden"></div>
+
+</div>
+
+<script>
+/* ============================================================
+   SOUND ENGINE
+   ============================================================ */
+let _actx = null;
+function ac() {
+  if (!_actx) _actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (_actx.state === 'suspended') _actx.resume();
+  return _actx;
+}
+function sndCorrect() {
+  try { const c = ac(), n = c.currentTime;
+    [523.25,659.25,783.99].forEach((f,i) => {
+      const o = c.createOscillator(), g = c.createGain();
+      o.type='sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(0.18,n+i*0.1);
+      g.gain.exponentialRampToValueAtTime(0.001,n+i*0.1+0.35);
+      o.connect(g).connect(c.destination);
+      o.start(n+i*0.1); o.stop(n+i*0.1+0.4);
+    });
+  } catch(e){}
+}
+function sndWrong() {
+  try { const c = ac(), n = c.currentTime;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type='sawtooth'; o.frequency.setValueAtTime(150,n);
+    o.frequency.linearRampToValueAtTime(100,n+0.3);
+    g.gain.setValueAtTime(0.1,n);
+    g.gain.exponentialRampToValueAtTime(0.001,n+0.3);
+    o.connect(g).connect(c.destination);
+    o.start(n); o.stop(n+0.35);
+  } catch(e){}
+}
+function sndFlip() {
+  try { const c = ac(), n = c.currentTime;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type='triangle'; o.frequency.value=880;
+    g.gain.setValueAtTime(0.06,n);
+    g.gain.exponentialRampToValueAtTime(0.001,n+0.08);
+    o.connect(g).connect(c.destination);
+    o.start(n); o.stop(n+0.1);
+  } catch(e){}
+}
+function sndVictory() {
+  try { const c = ac(), n = c.currentTime;
+    [523.25,659.25,783.99,1046.5].forEach((f,i) => {
+      const o = c.createOscillator(), g = c.createGain();
+      o.type='sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(0.15,n+i*0.15);
+      g.gain.exponentialRampToValueAtTime(0.001,n+i*0.15+0.5);
+      o.connect(g).connect(c.destination);
+      o.start(n+i*0.15); o.stop(n+i*0.15+0.55);
+    });
+  } catch(e){}
+}
+
+/* ============================================================
+   FUNCTION DATA
+   ============================================================ */
+const FNS = [
+  { name:'f(x) = 1',    id:'constant',      hint:'Flat horizontal line at y = 1.' },
+  { name:'f(x) = x',    id:'linear',        hint:'Straight diagonal through the origin, slope 1.' },
+  { name:'f(x) = |x|',  id:'absolute',      hint:'V-shape with vertex at origin, always non-negative.' },
+  { name:'f(x) = sqrt(x)', id:'sqrt',       hint:'Starts at origin, curves right getting flatter. x >= 0 only.' },
+  { name:'f(x) = x^2',  id:'quadratic',     hint:'U-shaped parabola opening upward, vertex at origin.' },
+  { name:'f(x) = x^3',  id:'cubic',         hint:'S-shaped curve through origin. Down-left, up-right.' },
+  { name:'f(x) = 1/x',  id:'reciprocal',    hint:'Two branches in quadrants I and III. Asymptotes at both axes.' },
+  { name:'f(x) = 1/x^2',id:'reciprocal_sq', hint:'Both branches above x-axis, symmetric. Asymptote at x = 0.' },
+];
+
+/* ============================================================
+   SVG GRAPH GENERATOR
+   ============================================================ */
+function makeGraph(fnId, size, darkBg) {
+  const pad = 20, w = size, h = size;
+  const xMin=-4.5,xMax=4.5,yMin=-4.5,yMax=4.5;
+  const tx = x => pad+((x-xMin)/(xMax-xMin))*(w-2*pad);
+  const ty = y => pad+((yMax-y)/(yMax-yMin))*(h-2*pad);
+
+  let svg = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="display:block;margin:0 auto">`;
+  svg += `<rect x="0" y="0" width="${w}" height="${h}" fill="${darkBg?'#16161a':'#1e1e22'}" rx="6" stroke="#2a2a30" stroke-width="1"/>`;
+
+  // grid
+  for (let i=-4;i<=4;i++) {
+    svg += `<line x1="${tx(i)}" y1="${ty(yMin)}" x2="${tx(i)}" y2="${ty(yMax)}" stroke="#333" stroke-width="0.4"/>`;
+    svg += `<line x1="${tx(xMin)}" y1="${ty(i)}" x2="${tx(xMax)}" y2="${ty(i)}" stroke="#333" stroke-width="0.4"/>`;
+  }
+
+  // axes
+  svg += `<line x1="${tx(xMin)}" y1="${ty(0)}" x2="${tx(xMax)}" y2="${ty(0)}" stroke="#666" stroke-width="1"/>`;
+  svg += `<line x1="${tx(0)}" y1="${ty(yMin)}" x2="${tx(0)}" y2="${ty(yMax)}" stroke="#666" stroke-width="1"/>`;
+
+  // ticks
+  for (let i=-4;i<=4;i++) {
+    if (i===0) continue;
+    svg += `<text x="${tx(i)}" y="${ty(0)+11}" text-anchor="middle" font-size="7" fill="#666">${i}</text>`;
+    svg += `<text x="${tx(0)-8}" y="${ty(i)+2.5}" text-anchor="middle" font-size="7" fill="#666">${i}</text>`;
+  }
+
+  // arrowheads
+  svg += `<polygon points="${tx(xMax)},${ty(0)} ${tx(xMax)-5},${ty(0)-3} ${tx(xMax)-5},${ty(0)+3}" fill="#666"/>`;
+  svg += `<polygon points="${tx(0)},${ty(yMax)} ${tx(0)-3},${ty(yMax)+5} ${tx(0)+3},${ty(yMax)+5}" fill="#666"/>`;
+
+  // axis labels
+  svg += `<text x="${tx(xMax)+1}" y="${ty(0)-5}" font-size="9" fill="#555" font-style="italic">x</text>`;
+  svg += `<text x="${tx(0)+5}" y="${ty(yMax)+2}" font-size="9" fill="#555" font-style="italic">y</text>`;
+
+  // function curve
+  function sample(fn, x0, x1, steps) {
+    steps = steps||300;
+    let pts=[], dx=(x1-x0)/steps;
+    for (let i=0;i<=steps;i++) {
+      const x=x0+i*dx, y=fn(x);
+      if (isFinite(y)&&Math.abs(y)<=10) pts.push([tx(x),ty(Math.max(yMin,Math.min(yMax,y)))]);
+      else pts.push(null);
+    }
+    let d='',drawing=false;
+    for (const p of pts) {
+      if (!p){drawing=false;continue;}
+      d+=(drawing?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)+' ';
+      drawing=true;
+    }
+    return d;
+  }
+
+  const col = '#60a5fa';
+  let paths = [];
+  switch(fnId) {
+    case 'constant': paths=[sample(()=>1,-4.5,4.5)]; break;
+    case 'linear': paths=[sample(x=>x,-4.5,4.5)]; break;
+    case 'absolute': paths=[sample(x=>Math.abs(x),-4.5,4.5)]; break;
+    case 'sqrt': paths=[sample(x=>Math.sqrt(x),0,4.5,200)]; break;
+    case 'quadratic': paths=[sample(x=>x*x,-2.2,2.2,200)]; break;
+    case 'cubic': paths=[sample(x=>x*x*x,-1.7,1.7,200)]; break;
+    case 'reciprocal': paths=[sample(x=>1/x,-4.5,-0.12,200),sample(x=>1/x,0.12,4.5,200)]; break;
+    case 'reciprocal_sq': paths=[sample(x=>1/(x*x),-4.5,-0.22,200),sample(x=>1/(x*x),0.22,4.5,200)]; break;
+  }
+  for (const d of paths) {
+    svg += `<path d="${d}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  svg += '</svg>';
+  return svg;
+}
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+function shuffle(a) {
+  const b=[...a];
+  for (let i=b.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]; }
+  return b;
+}
+
+function show(id) {
+  ['menu-screen','play-screen','results-screen'].forEach(s => {
+    document.getElementById(s).classList.toggle('hidden', s !== id);
+  });
+}
+
+/* ============================================================
+   REFERENCE
+   ============================================================ */
+let refOpen = false;
+function toggleRef() {
+  refOpen = !refOpen;
+  document.getElementById('refSection').classList.toggle('hidden', !refOpen);
+  document.getElementById('refToggle').textContent = refOpen ? 'Hide quick reference' : 'Show quick reference';
+  if (refOpen && !document.getElementById('refGrid').innerHTML) {
+    let html = '';
+    for (const fn of FNS) {
+      html += `<div class="ref-item">${makeGraph(fn.id, 140, true)}<div class="ref-label">${fn.name}</div><div class="ref-hint">${fn.hint}</div></div>`;
+    }
+    document.getElementById('refGrid').innerHTML = html;
+  }
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentMode = null;
+let bestScores = { match: 0, speed: 0 };
+let timerInterval = null;
+
+function startMode(m) {
+  currentMode = m;
+  if (m === 'match') startMatch();
+  else if (m === 'flash') startFlash();
+  else if (m === 'speed') startSpeed();
+}
+
+function quit() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  show('menu-screen');
+}
+
+function showResults(score, total, label) {
+  sndVictory();
+  if (currentMode === 'match' && score > bestScores.match) bestScores.match = score;
+  if (currentMode === 'speed' && score > bestScores.speed) bestScores.speed = score;
+
+  const best = currentMode === 'match' ? bestScores.match : currentMode === 'speed' ? bestScores.speed : null;
+
+  let html = `<div class="results-box">
+    <div class="big-score">${score}</div>
+    <div class="score-context">${label}</div>
+    ${best !== null ? `<div class="best-line">Best: ${best}</div>` : ''}
+  </div>
+  <div class="results-actions">
+    <button class="btn btn-primary btn-sm" onclick="startMode('${currentMode}')">Play Again</button>
+    <button class="btn btn-ghost btn-sm" onclick="quit()">Menu</button>
+  </div>`;
+  document.getElementById('results-screen').innerHTML = html;
+  show('results-screen');
+}
+
+/* ============================================================
+   MATCH MODE
+   ============================================================ */
+function startMatch() {
+  const order = shuffle(FNS);
+  let idx = 0, score = 0, locked = false;
+
+  function render() {
+    const fn = order[idx];
+    const opts = shuffle([fn, ...shuffle(FNS.filter(f=>f.id!==fn.id)).slice(0,3)]);
+
+    let html = `<div class="play-area">
+      <button class="quit-btn" onclick="quit()">Quit</button>
+      <div class="status-line">Question ${idx+1} of ${order.length}</div>
+      <div class="graph-wrap">${makeGraph(fn.id, 220, true)}</div>
+      <div class="options-grid">
+        ${opts.map((o,i) => `<button class="opt-btn" id="opt${i}" onclick="matchPick(${i},'${o.id}')">${o.name}</button>`).join('')}
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${(idx/order.length)*100}%;background:var(--blue)"></div></div>
+      <div class="score-line">Score: ${score} / ${order.length}</div>
+    </div>`;
+    document.getElementById('play-screen').innerHTML = html;
+    show('play-screen');
+    locked = false;
+
+    window.matchPick = function(i, picked) {
+      if (locked) return;
+      locked = true;
+      const correct = fn.id;
+      const btn = document.getElementById('opt'+i);
+      if (picked === correct) {
+        btn.classList.add('opt-correct');
+        sndCorrect();
+        score++;
+      } else {
+        btn.classList.add('opt-wrong');
+        sndWrong();
+        // highlight correct
+        opts.forEach((o,j) => { if(o.id===correct) document.getElementById('opt'+j).classList.add('opt-correct'); });
+      }
+      document.querySelectorAll('.opt-btn').forEach(b => b.classList.add('opt-disabled'));
+      setTimeout(() => {
+        idx++;
+        if (idx < order.length) render();
+        else showResults(score, order.length, `out of ${order.length}`);
+      }, 1200);
+    };
+  }
+  render();
+}
+
+/* ============================================================
+   FLASHCARD MODE
+   ============================================================ */
+function startFlash() {
+  const order = shuffle(FNS);
+  let idx = 0, known = 0, flipped = false;
+
+  function render() {
+    const fn = order[idx];
+    let html = `<div class="play-area">
+      <button class="quit-btn" onclick="quit()">Quit</button>
+      <div class="status-line">Card ${idx+1} of ${order.length}</div>
+      <div class="flashcard ${flipped?'flipped':''}" id="flashcard" onclick="flipCard()">
+        ${flipped
+          ? makeGraph(fn.id, 220, true)
+          : `<div class="fc-label">${fn.name}</div>`
+        }
+        <div class="fc-hint">${flipped ? fn.hint : 'Tap to reveal graph'}</div>
+      </div>
+      ${flipped ? `<div class="fc-actions">
+        <button class="fc-btn fc-miss" onclick="fcRate(false)">Still learning</button>
+        <button class="fc-btn fc-got" onclick="fcRate(true)">Got it</button>
+      </div>` : ''}
+      <div class="progress-bar"><div class="progress-fill" style="width:${((idx+(flipped?0.5:0))/order.length)*100}%;background:var(--blue)"></div></div>
+    </div>`;
+    document.getElementById('play-screen').innerHTML = html;
+    show('play-screen');
+
+    window.flipCard = function() {
+      if (!flipped) { flipped = true; sndFlip(); render(); }
+    };
+    window.fcRate = function(gotIt) {
+      if (gotIt) { sndCorrect(); known++; } else { sndWrong(); }
+      flipped = false;
+      idx++;
+      if (idx < order.length) render();
+      else showResults(known, order.length, `out of ${order.length} known`);
+    };
+  }
+  render();
+}
+
+/* ============================================================
+   SPEED ROUND
+   ============================================================ */
+function startSpeed() {
+  let timeLeft = 45, score = 0, locked = false;
+  let currentFn = null, opts = [];
+
+  function nextQ() {
+    currentFn = FNS[Math.floor(Math.random()*FNS.length)];
+    opts = shuffle([currentFn, ...shuffle(FNS.filter(f=>f.id!==currentFn.id)).slice(0,3)]);
+    locked = false;
+    renderPlay();
+  }
+
+  function renderPlay() {
+    const barPct = (timeLeft/45)*100;
+    const barCol = timeLeft > 15 ? 'var(--green)' : timeLeft > 7 ? 'var(--gold)' : 'var(--red)';
+
+    let html = `<div class="play-area">
+      <button class="quit-btn" onclick="speedQuit()">Quit</button>
+      <div class="speed-status">${score} correct — ${timeLeft}s left</div>
+      <div class="timer-bar"><div class="timer-fill" style="width:${barPct}%;background:${barCol}"></div></div>
+      <div class="graph-wrap">${makeGraph(currentFn.id, 190, true)}</div>
+      <div class="options-grid">
+        ${opts.map((o,i) => `<button class="opt-btn" id="sopt${i}" onclick="speedPick(${i},'${o.id}')">${o.name}</button>`).join('')}
+      </div>
+    </div>`;
+    document.getElementById('play-screen').innerHTML = html;
+    show('play-screen');
+  }
+
+  window.speedPick = function(i, picked) {
+    if (locked || timeLeft <= 0) return;
+    locked = true;
+    if (picked === currentFn.id) {
+      document.getElementById('sopt'+i).classList.add('opt-correct');
+      sndCorrect();
+      score++;
+      setTimeout(nextQ, 300);
+    } else {
+      document.getElementById('sopt'+i).classList.add('opt-wrong');
+      sndWrong();
+      opts.forEach((o,j) => { if(o.id===currentFn.id) document.getElementById('sopt'+j).classList.add('opt-correct'); });
+      setTimeout(nextQ, 500);
+    }
+  };
+
+  window.speedQuit = function() {
+    clearInterval(timerInterval); timerInterval = null; quit();
+  };
+
+  nextQ();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval); timerInterval = null;
+      showResults(score, null, 'in 45 seconds');
+    } else {
+      // update bar and status without full re-render
+      const bar = document.querySelector('.timer-fill');
+      const status = document.querySelector('.speed-status');
+      if (bar) {
+        bar.style.width = (timeLeft/45)*100 + '%';
+        bar.style.background = timeLeft > 15 ? 'var(--green)' : timeLeft > 7 ? 'var(--gold)' : 'var(--red)';
+      }
+      if (status) status.textContent = `${score} correct — ${timeLeft}s left`;
+    }
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
