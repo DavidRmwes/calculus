@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log &amp; Exponent Rules — Calc II Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-base: #0e0e10;
+    --bg-card: #1e1e22;
+    --bg-card-hover: #26262b;
+    --border: #2a2a30;
+    --border-hover: #3a3a42;
+    --text: #e4e4e7;
+    --text-mid: #a1a1aa;
+    --text-dim: #52525a;
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.1);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.1);
+    --blue: #60a5fa;
+    --gold: #fbbf24;
+    --card-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Nunito',sans-serif; background:var(--bg-base); color:var(--text); min-height:100vh; }
+  .page-wrap { max-width:520px; margin:0 auto; padding:32px 16px 60px; }
+
+  .top-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+  .back-link { font-size:0.8rem; font-weight:700; color:var(--text-dim); text-decoration:none; transition:color 0.15s; }
+  .back-link:hover { color:var(--text-mid); }
+  .page-title { font-family:'Crimson Pro',serif; font-size:1.5rem; font-weight:700; letter-spacing:-0.5px; }
+  .spacer { width:60px; }
+
+  .btn { font-family:'Nunito',sans-serif; font-weight:800; border:none; border-radius:8px; cursor:pointer; transition:all 0.15s; }
+  .btn:hover { transform:translateY(-1px); }
+  .btn:active { transform:translateY(0); }
+  .btn-primary { background:var(--blue); color:#0e0e10; padding:12px 24px; font-size:0.9rem; }
+  .btn-ghost { background:transparent; color:var(--text-mid); border:1px solid var(--border); padding:10px 20px; font-size:0.82rem; }
+  .btn-ghost:hover { border-color:var(--border-hover); color:var(--text); }
+  .btn-sm { padding:8px 16px; font-size:0.78rem; }
+  .btn-start { width:100%; padding:13px; font-size:0.9rem; font-family:'Nunito',sans-serif; font-weight:800; border:none; border-radius:8px; cursor:pointer; transition:all 0.15s; margin-top:12px; }
+  .btn-start:hover { transform:translateY(-1px); }
+  .btn-start:active { transform:translateY(0); }
+  .btn-start:disabled { opacity:0.4; cursor:default; transform:none; }
+
+  .menu-modes { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+  .mode-card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 18px; cursor:pointer; transition:all 0.2s; text-align:left; font-family:'Nunito',sans-serif; color:var(--text); width:100%; }
+  .mode-card:hover { background:var(--bg-card-hover); border-color:var(--border-hover); transform:translateY(-1px); }
+  .mode-card .mode-title { font-size:0.95rem; font-weight:900; margin-bottom:2px; }
+  .mode-card .mode-desc { font-size:0.74rem; color:var(--text-mid); }
+
+  .cat-picker { margin-bottom:8px; }
+  .cat-picker-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .cat-picker-header span { font-size:0.82rem; font-weight:800; color:var(--text-mid); }
+  .cat-toggle-all { font-size:0.7rem; font-weight:700; color:var(--text-dim); background:none; border:none; cursor:pointer; text-decoration:underline; font-family:'Nunito',sans-serif; }
+  .cat-toggle-all:hover { color:var(--text-mid); }
+  .cat-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  @media(max-width:400px){ .cat-grid{grid-template-columns:1fr;} }
+  .cat-btn { padding:8px 10px; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; cursor:pointer; text-align:left; font-family:'Nunito',sans-serif; transition:all 0.15s; color:var(--text-dim); }
+  .cat-btn:hover { border-color:var(--border-hover); }
+  .cat-btn.active { border-color:var(--blue); color:var(--text); background:rgba(96,165,250,0.06); }
+  .cat-btn .cat-name { font-size:0.78rem; font-weight:700; display:block; }
+  .cat-btn .cat-count { font-size:0.62rem; color:var(--text-dim); }
+  .back-to-menu { width:100%; margin-top:6px; padding:9px; background:none; border:1px solid var(--border); border-radius:8px; font-size:0.78rem; font-weight:700; color:var(--text-dim); cursor:pointer; font-family:'Nunito',sans-serif; }
+  .back-to-menu:hover { border-color:var(--border-hover); color:var(--text-mid); }
+
+  .ref-toggle { font-size:0.78rem; font-weight:700; color:var(--text-dim); background:none; border:none; cursor:pointer; padding:6px 0; margin-top:16px; font-family:'Nunito',sans-serif; }
+  .ref-toggle:hover { color:var(--text-mid); }
+  .ref-section { margin-top:12px; }
+  .ref-cat { margin-bottom:6px; }
+  .ref-cat-btn { width:100%; padding:10px 14px; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; cursor:pointer; text-align:left; font-family:'Nunito',sans-serif; display:flex; justify-content:space-between; align-items:center; transition:all 0.15s; color:var(--text-mid); }
+  .ref-cat-btn:hover { border-color:var(--border-hover); color:var(--text); }
+  .ref-cat-btn.open { border-radius:8px 8px 0 0; border-color:var(--border-hover); color:var(--text); }
+  .ref-cat-btn .rcb-name { font-size:0.82rem; font-weight:800; }
+  .ref-cat-btn .rcb-count { font-size:0.65rem; color:var(--text-dim); }
+  .ref-cat-body { background:var(--bg-card); border:1px solid var(--border-hover); border-top:none; border-radius:0 0 8px 8px; padding:6px 12px; margin-bottom:4px; }
+  .ref-row { display:flex; justify-content:space-between; align-items:baseline; gap:8px; padding:7px 0; border-bottom:1px solid var(--border); }
+  .ref-row:last-child { border-bottom:none; }
+  .ref-q { font-size:0.78rem; color:var(--text-mid); font-weight:600; }
+  .ref-a { font-size:0.78rem; color:var(--blue); font-weight:800; text-align:right; flex-shrink:0; }
+
+  .play-area { position:relative; }
+  .quit-btn { position:absolute; top:0; right:0; padding:5px 12px; background:var(--bg-card); border:1px solid var(--border); border-radius:6px; font-size:0.72rem; font-weight:700; color:var(--text-dim); cursor:pointer; font-family:'Nunito',sans-serif; z-index:10; }
+  .quit-btn:hover { color:var(--text-mid); border-color:var(--border-hover); }
+  .status-line { font-size:0.8rem; font-weight:700; color:var(--text-mid); margin-bottom:10px; }
+  .cat-badge { display:inline-block; font-size:0.6rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; padding:2px 8px; border-radius:4px; background:rgba(96,165,250,0.1); color:var(--blue); border:1px solid rgba(96,165,250,0.2); margin-bottom:8px; }
+  .question-card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:22px 16px; text-align:center; margin-bottom:12px; box-shadow:var(--card-shadow); }
+  .question-card .q-text { font-size:1.15rem; font-weight:800; line-height:1.4; }
+  .options-list { display:grid; grid-template-columns:1fr; gap:7px; margin-bottom:12px; }
+  .opt-btn { padding:12px 14px; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:0.85rem; font-family:'Nunito',sans-serif; font-weight:700; color:var(--text); transition:all 0.15s; text-align:center; }
+  .opt-btn:hover:not(.opt-disabled) { background:var(--bg-card-hover); border-color:var(--border-hover); }
+  .opt-btn.opt-correct { background:var(--green-dim); border-color:var(--green); color:var(--green); }
+  .opt-btn.opt-wrong { background:var(--red-dim); border-color:var(--red); color:var(--red); }
+  .opt-btn.opt-disabled { cursor:default; }
+  .progress-bar { height:5px; background:var(--border); border-radius:3px; overflow:hidden; margin-bottom:6px; }
+  .progress-fill { height:100%; border-radius:3px; transition:width 0.4s ease; }
+  .timer-bar { height:7px; background:var(--border); border-radius:4px; overflow:hidden; margin:8px 0; }
+  .timer-fill { height:100%; border-radius:4px; transition:width 1s linear, background 0.3s; }
+  .score-line { text-align:center; font-size:0.75rem; color:var(--text-dim); }
+  .speed-status { font-size:0.85rem; font-weight:800; color:var(--text-mid); margin-bottom:6px; }
+
+  .flashcard { width:100%; min-height:180px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; padding:28px 20px; transition:all 0.25s; margin:14px 0; box-shadow:var(--card-shadow); }
+  .flashcard:hover { border-color:var(--border-hover); }
+  .flashcard.flipped { border-color:var(--green); }
+  .flashcard .fc-label { font-size:1.15rem; font-weight:800; text-align:center; line-height:1.4; }
+  .flashcard .fc-answer { font-size:1.15rem; font-weight:800; text-align:center; line-height:1.4; color:var(--green); }
+  .flashcard .fc-hint { font-size:0.72rem; color:var(--text-dim); margin-top:12px; }
+  .fc-actions { display:flex; gap:10px; justify-content:center; margin-top:8px; }
+  .fc-btn { padding:10px 22px; border-radius:8px; font-size:0.8rem; font-weight:700; font-family:'Nunito',sans-serif; cursor:pointer; transition:all 0.15s; }
+  .fc-btn:hover { transform:translateY(-1px); }
+  .fc-miss { background:var(--red-dim); border:1px solid rgba(248,113,113,0.3); color:var(--red); }
+  .fc-got { background:var(--green-dim); border:1px solid rgba(74,222,128,0.3); color:var(--green); }
+
+  .results-box { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:28px; text-align:center; margin:24px 0; }
+  .results-box .big-score { font-size:3rem; font-weight:900; color:var(--green); line-height:1; }
+  .results-box .score-context { font-size:0.85rem; color:var(--text-mid); margin-top:4px; }
+  .results-box .best-line { font-size:0.72rem; color:var(--text-dim); margin-top:8px; }
+  .results-actions { display:flex; gap:10px; justify-content:center; }
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <div class="top-bar">
+    <a href="index.html" class="back-link">Back</a>
+    <div class="page-title">Log &amp; Exponent Rules</div>
+    <div class="spacer"></div>
+  </div>
+
+  <div id="menu-screen">
+    <div class="menu-modes">
+      <button class="mode-card" onclick="requestStart('quiz')">
+        <div class="mode-title">Quiz</div>
+        <div class="mode-desc">Multiple choice — see the rule, pick the result.</div>
+      </button>
+      <button class="mode-card" onclick="requestStart('flash')">
+        <div class="mode-title">Flashcards</div>
+        <div class="mode-desc">Think first, then reveal. Self-rate.</div>
+      </button>
+      <button class="mode-card" onclick="requestStart('speed')">
+        <div class="mode-title">Speed Round</div>
+        <div class="mode-desc">60 seconds. How many can you nail?</div>
+      </button>
+    </div>
+    <button class="ref-toggle" id="refToggle" onclick="toggleRef()">Show reference sheet</button>
+    <div id="refSection" class="ref-section hidden"></div>
+  </div>
+
+  <div id="picker-screen" class="hidden"></div>
+  <div id="play-screen" class="hidden"></div>
+  <div id="results-screen" class="hidden"></div>
+</div>
+
+<script>
+/* SOUNDS */
+let _actx=null;
+function ac(){if(!_actx)_actx=new(window.AudioContext||window.webkitAudioContext)();if(_actx.state==='suspended')_actx.resume();return _actx;}
+function sndCorrect(){try{const c=ac(),n=c.currentTime;[523.25,659.25,783.99].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0.18,n+i*0.1);g.gain.exponentialRampToValueAtTime(0.001,n+i*0.1+0.35);o.connect(g).connect(c.destination);o.start(n+i*0.1);o.stop(n+i*0.1+0.4);});}catch(e){}}
+function sndWrong(){try{const c=ac(),n=c.currentTime;const o=c.createOscillator(),g=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(150,n);o.frequency.linearRampToValueAtTime(100,n+0.3);g.gain.setValueAtTime(0.1,n);g.gain.exponentialRampToValueAtTime(0.001,n+0.3);o.connect(g).connect(c.destination);o.start(n);o.stop(n+0.35);}catch(e){}}
+function sndFlip(){try{const c=ac(),n=c.currentTime;const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=880;g.gain.setValueAtTime(0.06,n);g.gain.exponentialRampToValueAtTime(0.001,n+0.08);o.connect(g).connect(c.destination);o.start(n);o.stop(n+0.1);}catch(e){}}
+function sndVictory(){try{const c=ac(),n=c.currentTime;[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0.15,n+i*0.15);g.gain.exponentialRampToValueAtTime(0.001,n+i*0.15+0.5);o.connect(g).connect(c.destination);o.start(n+i*0.15);o.stop(n+i*0.15+0.55);});}catch(e){}}
+
+/* ============================================================
+   DATA
+   ============================================================ */
+const CATS = [
+  { id:'logProps', name:'Log Properties', items:[
+    {q:'log_b(MN) = ?', a:'log_b(M) + log_b(N)', d:['log_b(M) * log_b(N)','log_b(M) − log_b(N)','log_b(M) / log_b(N)']},
+    {q:'log_b(M/N) = ?', a:'log_b(M) − log_b(N)', d:['log_b(M) + log_b(N)','log_b(M) / log_b(N)','log_b(M) * log_b(N)']},
+    {q:'log_b(M^p) = ?', a:'p * log_b(M)', d:['log_b(p * M)','log_b(M) ^ p','log_b(M) + p']},
+    {q:'log_b(1) = ?', a:'0', d:['1','b','undefined']},
+    {q:'log_b(b) = ?', a:'1', d:['0','b','undefined']},
+    {q:'log_b(b^x) = ?', a:'x', d:['b^x','x * b','b * x']},
+    {q:'b^(log_b(x)) = ?', a:'x', d:['b','log_b(x)','b^x']},
+  ]},
+  { id:'changeBase', name:'Change of Base', items:[
+    {q:'log_b(M) = ? (using ln)', a:'ln(M) / ln(b)', d:['ln(b) / ln(M)','ln(M) * ln(b)','ln(M) − ln(b)']},
+    {q:'log_b(M) = ? (using log)', a:'log(M) / log(b)', d:['log(b) / log(M)','log(M) * log(b)','log(M) − log(b)']},
+    {q:'log_a(b) * log_b(a) = ?', a:'1', d:['0','a * b','log_a(b) + log_b(a)']},
+  ]},
+  { id:'natLog', name:'Natural Log & e', items:[
+    {q:'ln(1) = ?', a:'0', d:['1','e','undefined']},
+    {q:'ln(e) = ?', a:'1', d:['0','e','1/e']},
+    {q:'ln(e^x) = ?', a:'x', d:['e^x','x * e','e * x']},
+    {q:'e^(ln x) = ?', a:'x', d:['e','ln(x)','e^x']},
+    {q:'ln(xy) = ?', a:'ln(x) + ln(y)', d:['ln(x) * ln(y)','ln(x) − ln(y)','ln(x) / ln(y)']},
+    {q:'ln(x/y) = ?', a:'ln(x) − ln(y)', d:['ln(x) + ln(y)','ln(x) / ln(y)','ln(x) * ln(y)']},
+    {q:'ln(x^n) = ?', a:'n * ln(x)', d:['ln(n * x)','ln(x) ^ n','ln(x) + n']},
+    {q:'e^0 = ?', a:'1', d:['0','e','undefined']},
+  ]},
+  { id:'expLaws', name:'Exponent Laws', items:[
+    {q:'a^m * a^n = ?', a:'a^(m+n)', d:['a^(m*n)','a^(m−n)','(a*a)^(m+n)']},
+    {q:'a^m / a^n = ?', a:'a^(m−n)', d:['a^(m+n)','a^(m*n)','a^(m/n)']},
+    {q:'(a^m)^n = ?', a:'a^(m*n)', d:['a^(m+n)','a^(m^n)','a^(m−n)']},
+    {q:'(ab)^n = ?', a:'a^n * b^n', d:['(a*b)^(2n)','a^n + b^n','ab^n']},
+    {q:'(a/b)^n = ?', a:'a^n / b^n', d:['a^n * b^n','(a−b)^n','a^n − b^n']},
+    {q:'a^0 = ? (a not 0)', a:'1', d:['0','a','undefined']},
+    {q:'a^(−n) = ?', a:'1 / a^n', d:['−a^n','(−a)^n','a^(1/n)']},
+  ]},
+  { id:'radicals', name:'Radicals & Rational Exponents', items:[
+    {q:'a^(1/n) = ?', a:'n-th root of a', d:['a / n','a * n','1 / a^n']},
+    {q:'a^(m/n) = ?', a:'(n-th root of a)^m', d:['a^m / a^n','a^(m−n)','m * a^n']},
+    {q:'sqrt(a) = a^?', a:'a^(1/2)', d:['a^2','a^(−1/2)','a^(2/1)']},
+    {q:'cbrt(a) = a^?', a:'a^(1/3)', d:['a^3','a^(−1/3)','a^(3/1)']},
+    {q:'sqrt(ab) = ?', a:'sqrt(a) * sqrt(b)', d:['sqrt(a) + sqrt(b)','sqrt(a+b)','sqrt(a) / sqrt(b)']},
+    {q:'sqrt(a/b) = ?', a:'sqrt(a) / sqrt(b)', d:['sqrt(a) * sqrt(b)','sqrt(a−b)','sqrt(a) + sqrt(b)']},
+  ]},
+  { id:'special', name:'Special Values & Traps', items:[
+    {q:'log_b(M + N) = ?', a:'Cannot simplify', d:['log_b(M) + log_b(N)','log_b(M) * log_b(N)','log_b(M*N)']},
+    {q:'(log_b M)^n = log_b(M^n)?', a:'No — they are different', d:['Yes — always equal','Only when n = 1','Only when b = 10']},
+    {q:'log_b(0) = ?', a:'Undefined', d:['0','1','−infinity']},
+    {q:'log_b(negative) = ?', a:'Undefined (reals)', d:['Negative number','0','1']},
+    {q:'0^0 = ?', a:'Indeterminate', d:['0','1','Undefined']},
+    {q:'What base is ln?', a:'e (approx 2.718)', d:['10','2','1']},
+    {q:'What base is log (no subscript)?', a:'10', d:['e','2','1']},
+  ]},
+];
+
+const ALL=[];
+CATS.forEach(cat=>cat.items.forEach(it=>ALL.push({...it,catId:cat.id,catName:cat.name})));
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+/* SCREENS */
+function show(id){['menu-screen','picker-screen','play-screen','results-screen'].forEach(s=>{document.getElementById(s).classList.toggle('hidden',s!==id);});}
+
+/* REFERENCE */
+let refOpen=false,refBuilt=false;
+function toggleRef(){
+  refOpen=!refOpen;
+  document.getElementById('refSection').classList.toggle('hidden',!refOpen);
+  document.getElementById('refToggle').textContent=refOpen?'Hide reference sheet':'Show reference sheet';
+  if(refOpen&&!refBuilt)buildRef();
+}
+function buildRef(){
+  refBuilt=true;
+  let html='';
+  CATS.forEach(cat=>{html+=`<div class="ref-cat" id="refcat-${cat.id}"><button class="ref-cat-btn" onclick="toggleRefCat('${cat.id}')"><span class="rcb-name">${cat.name}</span><span class="rcb-count">${cat.items.length} items</span></button></div>`;});
+  document.getElementById('refSection').innerHTML=html;
+}
+function toggleRefCat(id){
+  const el=document.getElementById('refcat-'+id);
+  const btn=el.querySelector('.ref-cat-btn');
+  const existing=el.querySelector('.ref-cat-body');
+  if(existing){existing.remove();btn.classList.remove('open');return;}
+  document.querySelectorAll('.ref-cat-body').forEach(e=>e.remove());
+  document.querySelectorAll('.ref-cat-btn').forEach(e=>e.classList.remove('open'));
+  const cat=CATS.find(c=>c.id===id);
+  let body='<div class="ref-cat-body">';
+  cat.items.forEach(it=>{body+=`<div class="ref-row"><span class="ref-q">${it.q}</span><span class="ref-a">${it.a}</span></div>`;});
+  body+='</div>';
+  btn.insertAdjacentHTML('afterend',body);
+  btn.classList.add('open');
+}
+
+/* STATE */
+let currentMode=null,selectedCats=CATS.map(c=>c.id);
+let bestScores={quiz:0,speed:0};
+let timerInterval=null;
+function quit(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}show('menu-screen');}
+
+/* CATEGORY PICKER */
+let pendingMode=null;
+function requestStart(m){pendingMode=m;renderPicker();show('picker-screen');}
+function renderPicker(){
+  const totalQ=selectedCats.reduce((n,id)=>n+CATS.find(c=>c.id===id).items.length,0);
+  const allSel=selectedCats.length===CATS.length;
+  let html=`<div class="cat-picker">
+    <div class="cat-picker-header"><span>Select categories</span><button class="cat-toggle-all" onclick="toggleAllCats()">${allSel?'Deselect all':'Select all'}</button></div>
+    <div class="cat-grid">${CATS.map(cat=>{const a=selectedCats.includes(cat.id);return`<button class="cat-btn ${a?'active':''}" onclick="toggleCat('${cat.id}')"><span class="cat-name">${cat.name}</span><span class="cat-count">${cat.items.length} cards</span></button>`;}).join('')}</div>
+    <button class="btn-start" style="background:${selectedCats.length>0?'var(--blue)':'var(--border)'};color:${selectedCats.length>0?'#0e0e10':'var(--text-dim)'}" ${selectedCats.length===0?'disabled':''} onclick="confirmStart()">Start (${totalQ} questions)</button>
+    <button class="back-to-menu" onclick="show('menu-screen')">Back</button>
+  </div>`;
+  document.getElementById('picker-screen').innerHTML=html;
+}
+window.toggleCat=function(id){if(selectedCats.includes(id))selectedCats=selectedCats.filter(c=>c!==id);else selectedCats.push(id);renderPicker();};
+window.toggleAllCats=function(){selectedCats=selectedCats.length===CATS.length?[]:CATS.map(c=>c.id);renderPicker();};
+function confirmStart(){currentMode=pendingMode;if(currentMode==='quiz')startQuiz();else if(currentMode==='flash')startFlash();else if(currentMode==='speed')startSpeed();}
+function getPool(){return ALL.filter(it=>selectedCats.includes(it.catId));}
+
+function showResults(score,total,label){
+  sndVictory();
+  if(currentMode==='quiz'&&score>bestScores.quiz)bestScores.quiz=score;
+  if(currentMode==='speed'&&score>bestScores.speed)bestScores.speed=score;
+  const best=currentMode==='quiz'?bestScores.quiz:currentMode==='speed'?bestScores.speed:null;
+  let html=`<div class="results-box"><div class="big-score">${score}</div><div class="score-context">${label}</div>${best!==null?`<div class="best-line">Best: ${best}</div>`:''}</div><div class="results-actions"><button class="btn btn-primary btn-sm" onclick="confirmStart()">Play Again</button><button class="btn btn-ghost btn-sm" onclick="quit()">Menu</button></div>`;
+  document.getElementById('results-screen').innerHTML=html;
+  show('results-screen');
+}
+
+/* QUIZ */
+function startQuiz(){
+  const questions=shuffle(getPool());let idx=0,score=0,locked=false;const total=questions.length;
+  function render(){
+    const q=questions[idx];const opts=shuffle([q.a,...q.d]);
+    let html=`<div class="play-area"><button class="quit-btn" onclick="quit()">Quit</button><div class="status-line">Question ${idx+1} of ${total}</div><div style="text-align:center"><span class="cat-badge">${q.catName}</span></div><div class="question-card"><div class="q-text">${q.q}</div></div><div class="options-list">${opts.map((o,i)=>`<button class="opt-btn" id="qopt${i}" onclick="quizPick(${i})">${o}</button>`).join('')}</div><div class="progress-bar"><div class="progress-fill" style="width:${(idx/total)*100}%;background:var(--blue)"></div></div><div class="score-line">Score: ${score} / ${total}</div></div>`;
+    document.getElementById('play-screen').innerHTML=html;show('play-screen');locked=false;
+    window.quizPick=function(i){
+      if(locked)return;locked=true;const picked=opts[i];const btn=document.getElementById('qopt'+i);
+      if(picked===q.a){btn.classList.add('opt-correct');sndCorrect();score++;}
+      else{btn.classList.add('opt-wrong');sndWrong();opts.forEach((o,j)=>{if(o===q.a)document.getElementById('qopt'+j).classList.add('opt-correct');});}
+      document.querySelectorAll('.opt-btn').forEach(b=>b.classList.add('opt-disabled'));
+      setTimeout(()=>{idx++;if(idx<total)render();else showResults(score,total,`out of ${total}`);},1300);
+    };
+  }
+  render();
+}
+
+/* FLASHCARDS */
+function startFlash(){
+  const cards=shuffle(getPool());let idx=0,known=0,flipped=false;const total=cards.length;
+  function render(){
+    const c=cards[idx];
+    let html=`<div class="play-area"><button class="quit-btn" onclick="quit()">Quit</button><div class="status-line">Card ${idx+1} of ${total}</div><div style="text-align:center"><span class="cat-badge">${c.catName}</span></div><div class="flashcard ${flipped?'flipped':''}" onclick="fcFlip()">${flipped?`<div class="fc-answer">${c.a}</div>`:`<div class="fc-label">${c.q}</div>`}<div class="fc-hint">${flipped?'Tap to flip back':'Tap to reveal answer'}</div></div>${flipped?`<div class="fc-actions"><button class="fc-btn fc-miss" onclick="fcRate(false)">Still learning</button><button class="fc-btn fc-got" onclick="fcRate(true)">Got it</button></div>`:''}<div class="progress-bar"><div class="progress-fill" style="width:${((idx+(flipped?0.5:0))/total)*100}%;background:var(--blue)"></div></div></div>`;
+    document.getElementById('play-screen').innerHTML=html;show('play-screen');
+    window.fcFlip=function(){if(!flipped){flipped=true;sndFlip();render();}};
+    window.fcRate=function(gotIt){if(gotIt){sndCorrect();known++;}else{sndWrong();}flipped=false;idx++;if(idx<total)render();else showResults(known,total,`out of ${total} known`);};
+  }
+  render();
+}
+
+/* SPEED */
+function startSpeed(){
+  const pool=getPool();let timeLeft=60,score=0,locked=false;let current=null,opts=[];
+  function nextQ(){current=pool[Math.floor(Math.random()*pool.length)];opts=shuffle([current.a,...current.d]);locked=false;renderPlay();}
+  function renderPlay(){
+    const barPct=(timeLeft/60)*100;const barCol=timeLeft>20?'var(--green)':timeLeft>10?'var(--gold)':'var(--red)';
+    let html=`<div class="play-area"><button class="quit-btn" onclick="speedQuit()">Quit</button><div class="speed-status">${score} correct — ${timeLeft}s left</div><div class="timer-bar"><div class="timer-fill" style="width:${barPct}%;background:${barCol}"></div></div><div style="text-align:center"><span class="cat-badge">${current.catName}</span></div><div class="question-card"><div class="q-text">${current.q}</div></div><div class="options-list">${opts.map((o,i)=>`<button class="opt-btn" id="sopt${i}" onclick="speedPick(${i})">${o}</button>`).join('')}</div></div>`;
+    document.getElementById('play-screen').innerHTML=html;show('play-screen');
+  }
+  window.speedPick=function(i){
+    if(locked||timeLeft<=0)return;locked=true;const picked=opts[i];
+    if(picked===current.a){document.getElementById('sopt'+i).classList.add('opt-correct');sndCorrect();score++;setTimeout(nextQ,300);}
+    else{document.getElementById('sopt'+i).classList.add('opt-wrong');sndWrong();opts.forEach((o,j)=>{if(o===current.a)document.getElementById('sopt'+j).classList.add('opt-correct');});setTimeout(nextQ,500);}
+  };
+  window.speedQuit=function(){clearInterval(timerInterval);timerInterval=null;quit();};
+  nextQ();
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    if(timeLeft<=0){clearInterval(timerInterval);timerInterval=null;showResults(score,null,'in 60 seconds');}
+    else{const bar=document.querySelector('.timer-fill');const status=document.querySelector('.speed-status');if(bar){bar.style.width=(timeLeft/60)*100+'%';bar.style.background=timeLeft>20?'var(--green)':timeLeft>10?'var(--gold)':'var(--red)';}if(status)status.textContent=`${score} correct — ${timeLeft}s left`;}
+  },1000);
+}
+</script>
+
+</body>
+</html>
