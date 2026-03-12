@@ -120,6 +120,22 @@
   .results-box .best-line { font-size:0.72rem; color:var(--text-dim); margin-top:8px; }
   .results-actions { display:flex; gap:10px; justify-content:center; }
   .hidden { display:none !important; }
+
+  /* FILL-IN-THE-BLANK */
+  .fib-card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:24px 18px; margin-bottom:14px; box-shadow:var(--card-shadow); }
+  .fib-equation { font-size:1.15rem; font-weight:800; line-height:2; text-align:center; }
+  .fib-input { width:58px; padding:6px 4px; text-align:center; font-size:1rem; font-weight:800; font-family:'Nunito',sans-serif; background:var(--bg-base); color:var(--blue); border:2px solid var(--border-hover); border-radius:6px; outline:none; transition:border-color 0.2s; -moz-appearance:textfield; }
+  .fib-input::-webkit-outer-spin-button,.fib-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .fib-input:focus { border-color:var(--blue); }
+  .fib-input.correct { border-color:var(--green); color:var(--green); background:var(--green-dim); }
+  .fib-input.wrong { border-color:var(--red); color:var(--red); background:var(--red-dim); }
+  .fib-submit { display:block; width:100%; padding:12px; margin-top:10px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.9rem; background:var(--blue); color:#0e0e10; border:none; border-radius:8px; cursor:pointer; transition:all 0.15s; }
+  .fib-submit:hover { transform:translateY(-1px); }
+  .fib-submit:active { transform:translateY(0); }
+  .fib-submit:disabled { opacity:0.4; cursor:default; transform:none; }
+  .fib-feedback { text-align:center; font-size:0.85rem; font-weight:700; margin-top:8px; min-height:1.2em; }
+  .fib-feedback.correct-fb { color:var(--green); }
+  .fib-feedback.wrong-fb { color:var(--red); }
 </style>
 </head>
 <body>
@@ -144,6 +160,10 @@
       <button class="mode-card" onclick="requestStart('speed')">
         <div class="mode-title">Speed Round</div>
         <div class="mode-desc">60 seconds. How many can you nail?</div>
+      </button>
+      <button class="mode-card" onclick="startFIB()">
+        <div class="mode-title">Fill in the Blank</div>
+        <div class="mode-desc">ALEKS-style — apply the rules with real numbers. Type your answer.</div>
       </button>
     </div>
     <button class="ref-toggle" id="refToggle" onclick="toggleRef()">Show reference sheet</button>
@@ -344,6 +364,134 @@ function startSpeed(){
     if(timeLeft<=0){clearInterval(timerInterval);timerInterval=null;showResults(score,null,'in 60 seconds');}
     else{const bar=document.querySelector('.timer-fill');const status=document.querySelector('.speed-status');if(bar){bar.style.width=(timeLeft/60)*100+'%';bar.style.background=timeLeft>20?'var(--green)':timeLeft>10?'var(--gold)':'var(--red)';}if(status)status.textContent=`${score} correct — ${timeLeft}s left`;}
   },1000);
+}
+
+/* ============================================================
+   FILL IN THE BLANK — ALEKS-style with real numbers
+   ============================================================ */
+function randInt(lo,hi){return Math.floor(Math.random()*(hi-lo+1))+lo;}
+function randFrom(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function generateFIBQuestions(count){
+  const questions=[];
+  const bases=[2,3,4,5,6,7,8,9,10];
+  const generators=[
+    // PRODUCT RULE: log_b(a) + log_b(c) = log_b(?)
+    function(){const b=randFrom(bases),a=randInt(2,12),c=randInt(2,12);
+      return {html:`log<sub>${b}</sub> ${a} + log<sub>${b}</sub> ${c} = log<sub>${b}</sub> <input class="fib-input" id="fib0" type="number">`,
+        answers:[a*c],ids:['fib0'],rule:'Product rule: log(a) + log(b) = log(ab)'}},
+    // QUOTIENT RULE: log_b(a) − log_b(?) = log_b(a/c)
+    function(){const b=randFrom(bases),c=randInt(2,6),result=randInt(2,9),a=c*result;
+      return {html:`log<sub>${b}</sub> ${a} &minus; log<sub>${b}</sub> <input class="fib-input" id="fib0" type="number"> = log<sub>${b}</sub> ${result}`,
+        answers:[c],ids:['fib0'],rule:'Quotient rule: log(a) − log(b) = log(a/b)'}},
+    // QUOTIENT RULE variant: log_b(a) − log_b(c) = log_b(?)
+    function(){const b=randFrom(bases),c=randInt(2,6),result=randInt(2,9),a=c*result;
+      return {html:`log<sub>${b}</sub> ${a} &minus; log<sub>${b}</sub> ${c} = log<sub>${b}</sub> <input class="fib-input" id="fib0" type="number">`,
+        answers:[result],ids:['fib0'],rule:'Quotient rule: log(a) − log(b) = log(a/b)'}},
+    // POWER RULE: n * log_b(a) = log_b(?)
+    function(){const b=randFrom(bases),a=randInt(2,7),n=randInt(2,4);
+      return {html:`${n} log<sub>${b}</sub> ${a} = log<sub>${b}</sub> <input class="fib-input" id="fib0" type="number">`,
+        answers:[Math.pow(a,n)],ids:['fib0'],rule:'Power rule: n * log(a) = log(a^n)'}},
+    // POWER RULE reverse: log_b(a^n) = ? * log_b(a)
+    function(){const b=randFrom(bases),a=randInt(2,7),n=randInt(2,5);
+      return {html:`log<sub>${b}</sub> ${Math.pow(a,n)} = <input class="fib-input" id="fib0" type="number"> &middot; log<sub>${b}</sub> ${a}`,
+        answers:[n],ids:['fib0'],rule:'Power rule: log(a^n) = n * log(a)'}},
+    // PRODUCT RULE reverse: log_b(?) = log_b(a) + log_b(c)
+    function(){const b=randFrom(bases),a=randInt(2,9),c=randInt(2,9);
+      return {html:`log<sub>${b}</sub> <input class="fib-input" id="fib0" type="number"> = log<sub>${b}</sub> ${a} + log<sub>${b}</sub> ${c}`,
+        answers:[a*c],ids:['fib0'],rule:'Product rule: log(ab) = log(a) + log(b)'}},
+    // IDENTITY: log_b(b^x) = ?
+    function(){const b=randFrom(bases),x=randInt(2,8);
+      return {html:`log<sub>${b}</sub> ${Math.pow(b,x)} = <input class="fib-input" id="fib0" type="number">`,
+        answers:[x],ids:['fib0'],rule:'Identity: log_b(b^x) = x'}},
+    // EXPONENT: b^(log_b(x)) = ?
+    function(){const b=randFrom([2,3,5,10]),x=randInt(2,20);
+      return {html:`${b}<sup>log<sub>${b}</sub> ${x}</sup> = <input class="fib-input" id="fib0" type="number">`,
+        answers:[x],ids:['fib0'],rule:'Identity: b^(log_b(x)) = x'}},
+    // PRODUCT + numbers: log_b(a) + log_b(c) = log_b(?) with bigger numbers
+    function(){const b=randFrom(bases),a=randInt(2,15),c=randInt(2,15);
+      return {html:`log<sub>${b}</sub> ${a} + log<sub>${b}</sub> ${c} = log<sub>${b}</sub> <input class="fib-input" id="fib0" type="number">`,
+        answers:[a*c],ids:['fib0'],rule:'Product rule: log(a) + log(b) = log(ab)'}},
+    // QUOTIENT with fraction result display: log_b(a) − log_b(c) = log_b(a/c)
+    function(){const b=randFrom(bases),a=randInt(3,11),c=randInt(2,10);
+      // show the fraction, ask for missing piece
+      return {html:`log<sub>${b}</sub> <input class="fib-input" id="fib0" type="number"> &minus; log<sub>${b}</sub> ${c} = log<sub>${b}</sub> ${a}`,
+        answers:[a*c],ids:['fib0'],rule:'Quotient rule: log(x) − log(c) = log(a) means x = a*c'}},
+  ];
+
+  const used=new Set();
+  while(questions.length<count){
+    const gen=randFrom(generators);
+    const q=gen();
+    const key=q.html.replace(/<[^>]+>/g,'');
+    if(!used.has(key)){used.add(key);questions.push(q);}
+  }
+  return questions;
+}
+
+function startFIB(){
+  currentMode='fib';
+  const questions=generateFIBQuestions(15);
+  let idx=0,score=0,locked=false;
+  const total=questions.length;
+
+  function render(){
+    const q=questions[idx];
+    let html=`<div class="play-area">
+      <button class="quit-btn" onclick="quit()">Quit</button>
+      <div class="status-line">Question ${idx+1} of ${total}</div>
+      <div class="fib-card">
+        <div class="fib-equation">${q.html}</div>
+        <button class="fib-submit" id="fibSubmit" onclick="fibCheck()">Check</button>
+        <div class="fib-feedback" id="fibFeedback"></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${(idx/total)*100}%;background:var(--blue)"></div></div>
+      <div class="score-line">Score: ${score} / ${total}</div>
+    </div>`;
+    document.getElementById('play-screen').innerHTML=html;
+    show('play-screen');
+    locked=false;
+
+    // focus first input
+    setTimeout(()=>{const inp=document.getElementById('fib0');if(inp)inp.focus();},100);
+
+    // allow Enter to submit
+    q.ids.forEach(id=>{
+      const inp=document.getElementById(id);
+      if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter')fibCheck();});
+    });
+
+    window.fibCheck=function(){
+      if(locked)return;locked=true;
+      let allCorrect=true;
+      q.ids.forEach((id,i)=>{
+        const inp=document.getElementById(id);
+        const val=parseFloat(inp.value);
+        if(val===q.answers[i]){inp.classList.add('correct');}
+        else{inp.classList.add('wrong');allCorrect=false;}
+        inp.readOnly=true;
+      });
+      document.getElementById('fibSubmit').disabled=true;
+      const fb=document.getElementById('fibFeedback');
+      if(allCorrect){
+        fb.textContent='Correct!';fb.className='fib-feedback correct-fb';
+        sndCorrect();score++;
+      } else {
+        const correctVals=q.answers.join(', ');
+        fb.innerHTML='Answer: '+correctVals+'<br><span style="font-size:0.72rem;color:var(--text-dim)">'+q.rule+'</span>';
+        fb.className='fib-feedback wrong-fb';
+        sndWrong();
+      }
+      setTimeout(()=>{idx++;if(idx<total)render();else{sndVictory();showFIBResults(score,total);}},2000);
+    };
+  }
+  render();
+}
+
+function showFIBResults(score,total){
+  let html=`<div class="results-box"><div class="big-score">${score}</div><div class="score-context">out of ${total}</div></div><div class="results-actions"><button class="btn btn-primary btn-sm" onclick="startFIB()">Play Again</button><button class="btn btn-ghost btn-sm" onclick="quit()">Menu</button></div>`;
+  document.getElementById('results-screen').innerHTML=html;
+  show('results-screen');
 }
 </script>
 
